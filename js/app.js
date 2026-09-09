@@ -50,6 +50,7 @@
     let basePane = null;
     let videoDuration = 6;
     let videoReady = false;
+    let videoPrimed = false;
     let previousCareerP = 0;
     const isMobileLayout = ()=>innerWidth<=760;
 
@@ -291,7 +292,21 @@
         const endTime=Math.max(0,videoDuration-(1/fps));
         const desired=scrub*endTime;
         if(Math.abs(transitionVideo.currentTime-desired)>.012){
-          try{transitionVideo.currentTime=desired}catch(e){}
+          try{
+            transitionVideo.currentTime=desired;
+            // Mobile Safari may not paint a newly-seeked frame while the video
+            // is paused. A muted one-frame play primes its decoder, then the
+            // scroll position takes control of the timeline again.
+            if(transitionVideo.paused && transitionVideo.readyState>=2){
+              const playAttempt=transitionVideo.play();
+              if(playAttempt?.then){
+                playAttempt.then(()=>{
+                  transitionVideo.pause();
+                  try{transitionVideo.currentTime=desired}catch(e){}
+                }).catch(()=>{});
+              }
+            }
+          }catch(e){}
         }
       }
       // The handoff plate is already the video's exact decoded frame zero. Keep it
@@ -300,13 +315,30 @@
       return {blend,scrub,active};
     }
 
+    function primeTransitionVideo(){
+      if(videoPrimed)return;
+      videoPrimed=true;
+      try{transitionVideo.load()}catch(e){}
+      const playAttempt=transitionVideo.play();
+      if(playAttempt?.then){
+        playAttempt.then(()=>transitionVideo.pause()).catch(()=>{});
+      }
+    }
+
     transitionVideo.addEventListener('loadedmetadata',()=>{
       videoDuration=Number.isFinite(transitionVideo.duration)?transitionVideo.duration:6;
       videoReady=true;
       transitionVideo.pause();
       try{transitionVideo.currentTime=0}catch(e){}
     });
+    transitionVideo.addEventListener('loadeddata',()=>{videoReady=true});
     transitionVideo.addEventListener('canplay',()=>{videoReady=true});
+    // Start decoding as soon as the browser allows it. The video is muted and
+    // inline, so this is permitted on mobile browsers after the first gesture.
+    ['touchstart','pointerdown','wheel','scroll'].forEach(eventName=>{
+      addEventListener(eventName,primeTransitionVideo,{once:true,passive:true});
+    });
+    setTimeout(primeTransitionVideo,0);
 
     function render(now){
       targetP=pageProgress();
