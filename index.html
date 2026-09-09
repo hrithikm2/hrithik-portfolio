@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#111317" />
+  <meta name="description" content="Hrithik Mishra — an interactive scroll-driven career journey from college to mobile, product, platform and AI engineering." />
+  <title>Hrithik Mishra — The Long Road</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- The visual scene stays composed here; styling and behavior live in dedicated modules. -->
+</head>
+<body>
+  <main class="journey" id="journey">
+    <div class="viewport">
+      <div class="scene">
+        <div class="scene-layer scene-0" id="scene0"></div>
+        <div class="scene-layer scene-1" id="scene1" style="opacity:0"></div>
+        <div class="scene-layer scene-2" id="scene2" style="opacity:0"></div>
+        <div class="scene-layer scene-3" id="scene3" style="opacity:0"></div>
+      </div>
+
+      <header class="topbar">
+        <div class="identity">
+          <div class="monogram">H</div>
+          <div><strong>Hrithik Mishra</strong><span>Mobile Software Engineer · Full-stack Product Engineering</span></div>
+        </div>
+        <div class="toplinks"><span>Scroll to walk the road</span><a href="mailto:iizhrithik@gmail.com">Contact</a></div>
+      </header>
+
+      <div class="mobileStageHud" aria-hidden="true">
+        <div class="mobileStageChapter">
+          <span class="mobileStageDot" id="mobileStageDot"></span>
+          <span class="mobileStageIndex" id="mobileStageIndex">01 / 08</span>
+          <span class="mobileStageYears" id="mobileStageYears">2019 — 2022</span>
+        </div>
+        <div class="mobileScrollCue">Scroll ↓</div>
+      </div>
+
+      <section class="storyPane" id="storyPane">
+        <div class="story" id="story">
+          <div class="chapterLine"><span id="chapterIndex">01 / 08</span><span id="chapterYears">2019 — 2022</span></div>
+          <h1 id="chapterTitle">Every path starts <em>small.</em></h1>
+          <p class="storyText" id="chapterBody">Computer Engineering was the beginning: strong fundamentals, steady curiosity, and the first proof that the work could compound.</p>
+          <div class="storyRule"></div>
+          <div class="storyMeta">
+            <div class="metaBlock"><b>Challenge</b><span id="chapterChallenge">Turn curiosity into engineering discipline.</span></div>
+            <div class="metaBlock"><b>What it built</b><span id="chapterGrowth">A foundation strong enough to keep climbing.</span></div>
+            <div class="metaBlock"><b>Proof</b><span id="chapterProof">First Class Distinction · 9.7 GPA final semester</span></div>
+            <div class="metaBlock"><b>Kit</b><span id="chapterKit">Foundations · Problem solving</span></div>
+          </div>
+          <div class="armorState"><span class="armorDot" id="armorDot"></span><span id="armorText">Bronze armor · apprentice</span></div>
+        </div>
+        <div class="mobileJourneyFooter" aria-hidden="true">
+          <div class="mobileProgressHead"><span>Journey progress</span><strong id="mobileProgressLabel">01 / 08</strong></div>
+          <div class="mobileProgressRail" id="mobileProgressRail">
+            <i class="current"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="mobileNext">
+            <div class="mobileNextCopy"><span id="mobileNextEyebrow">Next chapter</span><strong id="mobileNextTitle">First real clients</strong></div>
+            <div class="mobileNextArrow">↓</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="worldPane" id="worldPane">
+        <div class="world" id="world">
+          <svg class="map" viewBox="0 0 1000 5600" aria-hidden="true">
+            <path class="pathShadow" d="M 470 150 C 660 270 740 510 620 760 S 280 1180 430 1460 S 760 1810 600 2100 S 270 2540 400 2860 S 740 3240 590 3570 S 250 3960 400 4290 S 730 4700 560 5050 S 420 5350 510 5490"/>
+            <path class="path" id="careerPath" d="M 470 150 C 660 270 740 510 620 760 S 280 1180 430 1460 S 760 1810 600 2100 S 270 2540 400 2860 S 740 3240 590 3570 S 250 3960 400 4290 S 730 4700 560 5050 S 420 5350 510 5490"/>
+            <path class="pathEdge" d="M 470 150 C 660 270 740 510 620 760 S 280 1180 430 1460 S 760 1810 600 2100 S 270 2540 400 2860 S 740 3240 590 3570 S 250 3960 400 4290 S 730 4700 560 5050 S 420 5350 510 5490"/>
+          </svg>
+
+          <div class="landmark college"></div>
+          <div class="landmark cityline"></div>
+          <div class="landmark teamMarks"><span></span><span></span><span></span></div>
+          <div class="landmark archGrid"></div>
+          <div class="landmark servers"><span></span><span></span><span></span></div>
+          <div class="landmark network"><span></span><span></span><span></span><span></span><span></span></div>
+
+          <div class="knight" id="knight" aria-label="Knight character evolving along Hrithik's career path">
+            <svg viewBox="0 0 100 150" role="img">
+              <defs>
+                <radialGradient id="crest" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#c8ffe5" stop-opacity="1"/><stop offset="1" stop-color="#58d49d" stop-opacity="0"/></radialGradient>
+              </defs>
+              <circle class="crestGlow" cx="50" cy="48" r="42" fill="url(#crest)"/>
+              <path class="cape" d="M28 61 C17 80 15 114 26 137 L49 116 L43 64 Z"/>
+
+              <g class="walkLeg leg-left">
+                <path class="armor-dark" d="M28 88 H45 L43 119 H29 Z"/>
+                <path class="armor-light" d="M30 92 H43 L42 105 H30 Z" opacity=".62"/>
+                <path fill="#20242a" d="M27 115 H44 L42 135 H21 Q21 124 27 115 Z"/>
+              </g>
+              <g class="walkLeg leg-right">
+                <path class="armor-dark" d="M55 88 H72 L71 119 H57 Z"/>
+                <path class="armor-light" d="M57 92 H70 L70 105 H57 Z" opacity=".62"/>
+                <path fill="#20242a" d="M56 115 H73 Q79 124 78 135 H57 Z"/>
+              </g>
+
+              <g class="body-core">
+                <path class="plume" d="M50 7 C36 4 30 14 31 23 C38 16 45 18 50 23 C55 17 64 16 70 22 C69 12 61 6 50 7 Z"/>
+                <path class="armor-dark" d="M31 37 C31 22 39 14 50 14 C61 14 69 22 69 37 L63 50 H37 Z"/>
+                <path class="armor-light" d="M36 25 H64 L67 34 H33 Z" opacity=".86"/>
+                <rect x="39" y="29" width="22" height="11" rx="2" fill="#111915" opacity=".98"/>
+                <path d="M43 31 V38 M47 31 V39 M51 31 V39 M55 31 V38" fill="none" stroke="#aebcb3" stroke-width="1.25" opacity=".9"/>
+                <path fill="#18221d" d="M42 42 Q50 46 58 42 L57 51 Q50 54 43 51 Z"/>
+                <path class="armor-main" d="M31 52 Q50 45 69 52 L73 91 Q50 102 27 91 Z"/>
+                <path class="armor-light" d="M36 57 Q50 52 64 57 L62 70 Q50 76 38 70 Z" opacity=".72"/>
+                <path class="armor-light" d="M30 76 H70 L68 88 H32 Z" opacity=".68"/>
+                <circle class="armor-light" cx="50" cy="82" r="5"/>
+              </g>
+
+              <g class="walkArm arm-left">
+                <path class="armor-dark" d="M23 54 Q29 48 37 52 L34 70 Q26 72 20 66 Z"/>
+                <path fill="var(--skin)" d="M21 67 L33 68 L30 89 Q24 90 20 85 Z"/>
+                <path class="armor-main" d="M16 69 Q24 64 32 69 L30 86 Q24 91 18 86 Z"/>
+                <path class="armor-light" d="M20 72 H29 L28 82 H20 Z" opacity=".66"/>
+              </g>
+
+              <g class="walkArm arm-right">
+                <path class="armor-dark" d="M77 54 Q71 48 63 52 L66 70 Q74 72 80 66 Z"/>
+                <path fill="var(--skin)" d="M79 67 L67 68 L70 89 Q76 90 80 85 Z"/>
+                <path class="swordBlade" d="M77 86 L91 47 L96 51 L82 91 Z"/>
+                <rect class="swordHilt" x="73" y="84" width="15" height="4" rx="2" transform="rotate(-17 80 86)"/>
+              </g>
+            </svg>
+            <div class="chargeHalo"></div>
+            <div class="slashFx"></div>
+          </div>
+          <div class="pickupBurst" id="pickupBurst"></div>
+        </div>
+      </section>
+
+      <section class="handoffPlate" id="handoffPlate" aria-hidden="true">
+        <img src="assets/transition-start.png" alt="" decoding="async" draggable="false">
+      </section>
+
+      <section class="videoStage" id="videoStage" aria-hidden="true">
+        <video id="transitionVideo" muted playsinline preload="auto" poster="assets/transition-start.png" tabindex="-1">
+          <source src="assets/transition-scrub.mp4" type="video/mp4">
+        </video>
+      </section>
+
+      <section class="tppScene" id="tppScene" aria-hidden="true">
+        <div class="tppBackdrop"></div>
+        <div class="tppGlow"></div>
+        <div class="tppMounts"></div>
+        <div class="tppMist"></div>
+        <div class="tppRoad">
+          <div class="tppRoadSheen"></div>
+          <div class="tppEdgeGlow"></div>
+          <div class="tppRoadDust"></div>
+          <div class="tppDemon d1"></div>
+          <div class="tppDemon d2"></div>
+          <div class="tppDemon d3"></div>
+          <div class="tppGem g1"></div>
+          <div class="tppGem g2"></div>
+          <div class="tppGem g3"></div>
+        </div>
+        <div class="tppKnight" id="tppKnight">
+          <svg viewBox="0 0 320 420" aria-hidden="true">
+            <defs>
+              <radialGradient id="emeraldAura" cx="50%" cy="40%" r="50%">
+                <stop offset="0" stop-color="#ddfff0" stop-opacity="1"/>
+                <stop offset="0.42" stop-color="#7ae7b0" stop-opacity="0.42"/>
+                <stop offset="1" stop-color="#63d7a2" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="capeShade" x1="0" x2="1">
+                <stop offset="0" stop-color="#0f2d24"/>
+                <stop offset="0.5" stop-color="#194b3b"/>
+                <stop offset="1" stop-color="#0f2d24"/>
+              </linearGradient>
+              <linearGradient id="emeraldMetal" x1="0" x2="1">
+                <stop offset="0" stop-color="#1f6f54"/>
+                <stop offset="0.5" stop-color="#3aa27a"/>
+                <stop offset="1" stop-color="#74ddb1"/>
+              </linearGradient>
+            </defs>
+            <ellipse class="rearGlow" cx="160" cy="170" rx="116" ry="138" fill="url(#emeraldAura)"/>
+
+            <g class="rearCapeWrap">
+              <path class="rearCape" d="M96 148 C69 205 60 308 94 384 C117 396 138 366 160 340 C182 366 203 396 226 384 C260 308 251 205 224 148 C205 162 185 170 160 172 C135 170 115 162 96 148 Z" fill="url(#capeShade)"/>
+              <path d="M160 176 L160 344" stroke="rgba(173,255,217,.16)" stroke-width="5" stroke-linecap="round"/>
+              <path d="M136 198 C144 222 148 255 146 304" stroke="rgba(187,255,226,.14)" stroke-width="3" stroke-linecap="round"/>
+              <path d="M184 198 C176 222 172 255 174 304" stroke="rgba(187,255,226,.14)" stroke-width="3" stroke-linecap="round"/>
+            </g>
+
+            <g class="rearLegL">
+              <path class="rearDark" d="M127 240 H151 L148 322 H127 Z"/>
+              <path fill="url(#emeraldMetal)" d="M129 244 H149 L147 287 H129 Z"/>
+              <path class="rearMetal" d="M128 260 H148" stroke="#dce8e1" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+              <path class="rearLeather" d="M124 315 H152 L149 380 H112 C112 356 117 334 124 315 Z"/>
+              <path class="rearMetal" d="M112 374 H150 V389 H110 Z" opacity=".72"/>
+            </g>
+            <g class="rearLegR">
+              <path class="rearDark" d="M169 240 H193 L192 322 H171 Z"/>
+              <path fill="url(#emeraldMetal)" d="M171 244 H191 L190 287 H171 Z"/>
+              <path class="rearMetal" d="M171 260 H191" stroke="#dce8e1" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+              <path class="rearLeather" d="M168 315 H196 C202 334 207 356 208 380 H169 Z"/>
+              <path class="rearMetal" d="M169 374 H208 V389 H169 Z" opacity=".72"/>
+            </g>
+
+            <g class="rearCore">
+              <g class="rearPlumeWrap">
+                <path class="rearPlume" d="M160 44 C136 36 121 53 124 74 C136 63 149 66 160 77 C171 66 184 63 196 74 C199 53 184 36 160 44 Z"/>
+              </g>
+              <path class="rearDark" d="M115 95 C115 69 132 54 160 54 C188 54 205 69 205 95 L198 129 H122 Z"/>
+              <path class="rearMetal" d="M135 92 H185 L196 114 H124 Z" opacity=".74"/>
+              <path class="rearDark" d="M142 118 H178 V132 H142 Z" opacity=".78"/>
+
+              <g class="rearShoulderL">
+                <path class="rearDark" d="M88 132 C96 112 116 108 134 116 L139 139 C125 147 109 150 95 147 Z"/>
+                <path class="rearLight" d="M98 124 C109 118 119 119 129 124 L131 136 C120 142 109 143 99 140 Z" opacity=".6"/>
+              </g>
+              <g class="rearShoulderR">
+                <path class="rearDark" d="M232 132 C224 112 204 108 186 116 L181 139 C195 147 211 150 225 147 Z"/>
+                <path class="rearLight" d="M222 124 C211 118 201 119 191 124 L189 136 C200 142 211 143 221 140 Z" opacity=".6"/>
+              </g>
+
+              <path fill="url(#emeraldMetal)" d="M104 140 C117 118 203 118 216 140 L228 232 C209 249 184 258 160 258 C136 258 111 249 92 232 Z"/>
+              <path class="rearDark" d="M126 149 C138 138 182 138 194 149 L200 189 C187 196 176 199 160 201 C144 199 133 196 120 189 Z" opacity=".56"/>
+              <path class="rearLight" d="M132 164 C142 156 178 156 188 164 L191 181 C177 191 143 191 129 181 Z" opacity=".56"/>
+              <path class="rearMetal" d="M126 212 H194" stroke="#dce8e1" stroke-width="4" stroke-linecap="round" opacity=".34"/>
+              <path class="rearMetal" d="M160 152 V238" stroke="#d7fff0" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+              <circle class="rearLight" cx="160" cy="218" r="19" opacity=".9"/>
+              <path class="rearDark" d="M160 198 V238 M140 218 H180" stroke="#184b3a" stroke-width="5" stroke-linecap="round"/>
+              <path class="rearRim" d="M109 144 C119 128 201 128 211 144"/>
+            </g>
+
+            <g class="rearArmL">
+              <path class="rearDark" d="M101 140 Q83 152 81 172 L88 236 Q98 243 112 239 L114 185 Q115 156 101 140 Z"/>
+              <path fill="url(#emeraldMetal)" d="M94 145 Q106 159 104 185 L103 231 Q93 231 86 224 L81 177 Q82 154 94 145 Z"/>
+              <path class="rearLeather" d="M88 228 L105 230 L101 281 Q90 287 82 278 Z"/>
+              <path class="rearDark" d="M72 272 C86 258 101 258 115 272 L108 319 C95 327 84 327 71 319 Z"/>
+              <path class="rearLight" d="M79 277 C89 269 97 269 107 277 L103 307 C94 313 89 313 80 307 Z" opacity=".52"/>
+            </g>
+            <g class="rearArmR">
+              <path class="rearDark" d="M219 140 Q237 152 239 172 L232 236 Q222 243 208 239 L206 185 Q205 156 219 140 Z"/>
+              <path fill="url(#emeraldMetal)" d="M226 145 Q214 159 216 185 L217 231 Q227 231 234 224 L239 177 Q238 154 226 145 Z"/>
+              <path class="rearLeather" d="M232 228 L215 230 L219 281 Q230 287 238 278 Z"/>
+              <path class="rearMetal" d="M221 270 L247 203 L257 208 L231 276 Z"/>
+              <rect class="rearDark" x="207" y="267" width="31" height="9" rx="4" transform="rotate(-22 222 271)"/>
+            </g>
+          </svg>
+        </div>
+        <div class="futureCopy" id="futureCopy">The camera shifts — the road continues</div>
+        <div class="tppVignette"></div>
+      </section>
+
+      <div class="upgradeToast" id="upgradeToast">Silver armor unlocked</div>
+      <div class="roadCaption">Scroll to walk · defeat the challenge · claim its gem · evolve</div>
+
+      <section class="finalPanel" id="finalPanel">
+        <h2>The road opens wider.</h2>
+        <p>The camera swings behind him, but the journey does not resolve into retirement. Emerald armor earned, more demons ahead, more systems to build, and harder problems worth walking toward — with momentum, not closure.</p>
+        <div class="finalActions"><a class="button primary" href="mailto:iizhrithik@gmail.com">Start a conversation</a><a class="button" href="#" id="replay">Replay</a></div>
+      </section>
+      <div class="grain"></div>
+    </div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <!--
+    Runtime code is loaded from js/app.js. This marker remains only as a stable
+    insertion point for static hosts that inspect the document structure.
+  -->
+</body>
+</html>
