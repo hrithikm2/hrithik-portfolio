@@ -51,6 +51,9 @@
     let videoDuration = 6;
     let videoReady = false;
     let videoPrimed = false;
+    let lastVideoSeekAt = 0;
+    let pendingVideoTime = null;
+    let videoSeekQueued = false;
     let previousCareerP = 0;
     const isMobileLayout = ()=>innerWidth<=760;
 
@@ -278,6 +281,27 @@
       return {t,settled};
     }
 
+    function scheduleVideoSeek(desired){
+      pendingVideoTime=desired;
+      if(videoSeekQueued)return;
+      videoSeekQueued=true;
+      requestAnimationFrame(()=>{
+        videoSeekQueued=false;
+        if(!videoReady || pendingVideoTime===null)return;
+        const now=performance.now();
+        const wait=90-(now-lastVideoSeekAt);
+        if(wait>0){
+          setTimeout(()=>scheduleVideoSeek(pendingVideoTime),wait);
+          return;
+        }
+        const nextTime=pendingVideoTime;
+        pendingVideoTime=null;
+        if(Math.abs(transitionVideo.currentTime-nextTime)<.045)return;
+        lastVideoSeekAt=now;
+        try{transitionVideo.currentTime=nextTime}catch(e){}
+      });
+    }
+
     function updateVideoStage(p){
       const blend=smoothstep01(clamp((p-VIDEO_BLEND_START)/(VIDEO_START-VIDEO_BLEND_START),0,1));
       const scrub=clamp((p-VIDEO_START)/(VIDEO_END-VIDEO_START),0,1);
@@ -285,29 +309,14 @@
       document.body.classList.toggle('video-active',active);
       videoStage.style.opacity=String(blend);
       videoStage.style.visibility=active?'visible':'hidden';
-      // The video is deliberately paused: scroll position owns its timeline.
-      transitionVideo.pause();
       if(videoReady){
         const fps=24;
         const endTime=Math.max(0,videoDuration-(1/fps));
         const desired=scrub*endTime;
-        if(Math.abs(transitionVideo.currentTime-desired)>.012){
-          try{
-            transitionVideo.currentTime=desired;
-            // Mobile Safari may not paint a newly-seeked frame while the video
-            // is paused. A muted one-frame play primes its decoder, then the
-            // scroll position takes control of the timeline again.
-            if(transitionVideo.paused && transitionVideo.readyState>=2){
-              const playAttempt=transitionVideo.play();
-              if(playAttempt?.then){
-                playAttempt.then(()=>{
-                  transitionVideo.pause();
-                  try{transitionVideo.currentTime=desired}catch(e){}
-                }).catch(()=>{});
-              }
-            }
-          }catch(e){}
-        }
+        // Seeking an MP4 on every animation frame makes mobile browsers decode
+        // far more data than the user can see. Coalesce updates and seek at a
+        // bounded cadence instead, while retaining direct scroll control.
+        scheduleVideoSeek(desired);
       }
       // The handoff plate is already the video's exact decoded frame zero. Keep it
       // underneath the video while the video fades in, eliminating a visual seam.
