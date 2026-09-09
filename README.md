@@ -5,6 +5,12 @@ Static Cloudflare Pages build.
 ## Deploy
 Upload the contents of this folder (or the provided ZIP) to Cloudflare Pages.
 
+The repository includes `wrangler.toml` for Wrangler-based Pages deployments. After authenticating with Cloudflare, deploy from the project root with:
+
+```bash
+npx wrangler pages deploy .
+```
+
 ## Current experience
 - Desktop: immersive full-screen scroll-driven career journey with live 2D knight/demon world and scroll-scrubbed Flow transition video.
 - Mobile: intentionally redesigned narrative-game layout with a larger cinematic stage, floating header, overlapping editorial story sheet, simplified HUD, journey progress rail, next-chapter teaser, and mobile-specific world scale/camera tuning.
