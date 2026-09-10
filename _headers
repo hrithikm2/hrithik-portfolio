@@ -1,7 +1,19 @@
-/assets/*
+/assets/transition-mobile-v2.mp4
   Cache-Control: public, max-age=31536000, immutable
 
+/assets/transition-desktop-v2.mp4
+  Cache-Control: public, max-age=31536000, immutable
+
+/
+  Cache-Control: no-cache
+
 /index.html
+  Cache-Control: no-cache
+
+/js/*
+  Cache-Control: no-cache
+
+/css/*
   Cache-Control: no-cache
 
 /*

@@ -1,4 +1,6 @@
-
+    import { chapters, gemDefs } from './data.js';
+    import { createScrollVideo } from './video-controller.js';
+    import { createFrameLoop } from './frame-loop.js';
     const journey = document.getElementById('journey');
     const worldPane = document.getElementById('worldPane');
     const world = document.getElementById('world');
@@ -31,9 +33,13 @@
     let lastArmor = 'bronze';
     let previousGemCount = 0;
     let viewportScale = 1;
-    let lastTime = performance.now();
-    let previousSmoothP = 0;
     let walkPhase = 0;
+    let chapterTimer = null;
+    let journeyTop = 0;
+    let scrollSpan = 1;
+    let renderedCareerP = -1;
+    let renderedHandoff = -1;
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
     // Preserve the existing career pacing in the first ~78% of the long scroll,
     // then reserve a generous scroll range for the six-second Flow transition.
@@ -48,12 +54,7 @@
     const VIDEO_END = .985;
     const forceHandoff = new URLSearchParams(location.search).has('handoff');
     let basePane = null;
-    let videoDuration = 6;
-    let videoReady = false;
-    let videoPrimed = false;
-    let lastVideoSeekAt = 0;
-    let pendingVideoTime = null;
-    let videoSeekQueued = false;
+    let videoHasFrame = false;
     let previousCareerP = 0;
     const isMobileLayout = ()=>innerWidth<=760;
 
@@ -120,16 +121,15 @@
     function lerp(a,b,t){return a+(b-a)*t}
     function pageProgress(){
       if(forceHandoff) return CAREER_SCROLL_END*HANDOFF_END;
-      const rect=journey.getBoundingClientRect();
-      const span=rect.height-innerHeight;
-      return clamp(-rect.top/span,0,1);
+      return clamp((scrollY-journeyTop)/scrollSpan,0,1);
     }
     function chapterFor(p){let i=0;for(let n=0;n<chapters.length;n++)if(p>=chapters[n].p)i=n;return i}
 
     function setChapter(i){
       if(i===lastChapter)return;
+      clearTimeout(chapterTimer);
       story.classList.add('fade');
-      setTimeout(()=>{
+      chapterTimer=setTimeout(()=>{
         const c=chapters[i];
         fields.index.textContent=String(i+1).padStart(2,'0')+' / 08'; fields.years.textContent=c.years; fields.title.innerHTML=c.title; fields.body.textContent=c.body; fields.challenge.textContent=c.challenge; fields.growth.textContent=c.growth; fields.proof.textContent=c.proof; fields.kit.textContent=c.kit;
         if(mobileStageIndex) mobileStageIndex.textContent=String(i+1).padStart(2,'0')+' / 08';
@@ -178,8 +178,13 @@
     function measureBasePane(){
       worldPane.style.left=''; worldPane.style.top=''; worldPane.style.right=''; worldPane.style.bottom='';
       const r=worldPane.getBoundingClientRect();
-      basePane={left:r.left,top:r.top,right:innerWidth-r.right,bottom:innerHeight-r.bottom,width:r.width,height:r.height};
+      const viewport=document.querySelector('.viewport').getBoundingClientRect();
+      basePane={left:r.left-viewport.left,top:r.top-viewport.top,right:viewport.right-r.right,bottom:viewport.bottom-r.bottom,width:r.width,height:r.height,viewportWidth:viewport.width,viewportHeight:viewport.height};
       viewportScale=r.width/1000;
+      journeyTop=journey.getBoundingClientRect().top+scrollY;
+      scrollSpan=Math.max(1,journey.offsetHeight-innerHeight);
+      renderedCareerP=-1;
+      renderedHandoff=-1;
     }
 
     function updateLayout(){
@@ -199,6 +204,10 @@
         const approaching=p>=approachStart && p<fightStart;
         const engaged=p>=fightStart && p<defeatAt;
         const gemAvailable=defeated && !collectedNow;
+        const inView=Math.abs(p-e.demonP)<.12;
+        e.demon.style.visibility=inView?'visible':'hidden';
+        e.demon.classList.toggle('in-view',inView);
+        e.gem.style.visibility=Math.abs(p-e.gemP)<.12?'visible':'hidden';
 
         e.demon.classList.toggle('approach',approaching);
         e.demon.classList.toggle('engaged',engaged);
@@ -233,7 +242,10 @@
       const raw=forceHandoff ? 1 : clamp((p-HANDOFF_START)/(HANDOFF_P-HANDOFF_START),0,1);
       const t=smoothstep01(raw);
       const settled=forceHandoff || p>=HANDOFF_P;
+      if(t===renderedHandoff)return {t,settled};
+      renderedHandoff=t;
       document.body.classList.toggle('handoff-ready',t>.001);
+      document.body.classList.toggle('world-hidden',t===1);
 
       // Keep the portfolio chrome/story visible. Only low-value game captions
       // disappear so the left chapter UI can remain as an overlay on the video.
@@ -281,94 +293,52 @@
       return {t,settled};
     }
 
-    function scheduleVideoSeek(desired){
-      pendingVideoTime=desired;
-      if(videoSeekQueued)return;
-      videoSeekQueued=true;
-      requestAnimationFrame(()=>{
-        videoSeekQueued=false;
-        if(!videoReady || pendingVideoTime===null)return;
-        const now=performance.now();
-        const wait=90-(now-lastVideoSeekAt);
-        if(wait>0){
-          setTimeout(()=>scheduleVideoSeek(pendingVideoTime),wait);
-          return;
-        }
-        const nextTime=pendingVideoTime;
-        pendingVideoTime=null;
-        if(Math.abs(transitionVideo.currentTime-nextTime)<.045)return;
-        lastVideoSeekAt=now;
-        try{transitionVideo.currentTime=nextTime}catch(e){}
-      });
-    }
+    const videoController=createScrollVideo(transitionVideo,{
+      url:isMobileLayout() || navigator.connection?.saveData
+        ? 'assets/transition-mobile-v2.mp4' : 'assets/transition-desktop-v2.mp4',
+      onFrame(){videoHasFrame=true;wake()},
+      onError(){videoHasFrame=false;wake()}
+    });
 
     function updateVideoStage(p){
       const blend=smoothstep01(clamp((p-VIDEO_BLEND_START)/(VIDEO_START-VIDEO_BLEND_START),0,1));
       const scrub=clamp((p-VIDEO_START)/(VIDEO_END-VIDEO_START),0,1);
       const active=p>=VIDEO_BLEND_START;
       document.body.classList.toggle('video-active',active);
-      videoStage.style.opacity=String(blend);
-      videoStage.style.visibility=active?'visible':'hidden';
-      if(videoReady){
-        const fps=24;
-        const endTime=Math.max(0,videoDuration-(1/fps));
-        const desired=scrub*endTime;
-        // Seeking an MP4 on every animation frame makes mobile browsers decode
-        // far more data than the user can see. Coalesce updates and seek at a
-        // bounded cadence instead, while retaining direct scroll control.
-        scheduleVideoSeek(desired);
-      }
-      // The handoff plate is already the video's exact decoded frame zero. Keep it
-      // underneath the video while the video fades in, eliminating a visual seam.
+      // Keep the real first-frame image visible until a decoded video frame exists.
+      videoStage.style.opacity=String(videoHasFrame?blend:0);
+      videoStage.style.visibility=active && videoHasFrame?'visible':'hidden';
+      videoController.setProgress(scrub);
       if(active){handoffPlate.style.visibility='visible';handoffPlate.style.opacity='1'}
-      return {blend,scrub,active};
+      // Restore the plate when scrolling backwards out of the video interval.
+      else {handoffPlate.style.opacity=String(renderedHandoff);handoffPlate.style.visibility=renderedHandoff>0?'visible':'hidden'}
     }
 
-    function primeTransitionVideo(){
-      if(videoPrimed)return;
-      videoPrimed=true;
-      try{transitionVideo.load()}catch(e){}
-      const playAttempt=transitionVideo.play();
-      if(playAttempt?.then){
-        playAttempt.then(()=>transitionVideo.pause()).catch(()=>{});
-      }
-    }
-
-    transitionVideo.addEventListener('loadedmetadata',()=>{
-      videoDuration=Number.isFinite(transitionVideo.duration)?transitionVideo.duration:6;
-      videoReady=true;
-      transitionVideo.pause();
-      try{transitionVideo.currentTime=0}catch(e){}
-    });
-    transitionVideo.addEventListener('loadeddata',()=>{videoReady=true});
-    transitionVideo.addEventListener('canplay',()=>{videoReady=true});
-    // Start decoding as soon as the browser allows it. The video is muted and
-    // inline, so this is permitted on mobile browsers after the first gesture.
-    ['touchstart','pointerdown','wheel','scroll'].forEach(eventName=>{
-      addEventListener(eventName,primeTransitionVideo,{once:true,passive:true});
-    });
-    setTimeout(primeTransitionVideo,0);
-
-    function render(now){
+    function render(now,dt){
       targetP=pageProgress();
-      const dt=Math.min(32,now-lastTime); lastTime=now;
       const ease=1-Math.pow(.0006,dt/1000);
       smoothP += (targetP-smoothP)*Math.min(.16,ease*9);
+      const moving=!reducedMotion.matches && Math.abs(targetP-smoothP)>.00001;
+      if(!moving)smoothP=targetP;
+      document.body.classList.toggle('is-moving',moving);
 
-      const careerP=clamp(smoothP/CAREER_SCROLL_END,0,1);
+      const careerP=Math.min(clamp(smoothP/CAREER_SCROLL_END,0,1),HANDOFF_P);
+      updateVideoStage(smoothP);
+      // The world is fully covered during the video. Do not animate or lay it out.
+      if(careerP===renderedCareerP)return moving;
+      renderedCareerP=careerP;
       const handoff=updateHandoffState(careerP);
       const visualP=Math.min(careerP,HANDOFF_P);
       const len=totalLength*visualP;
       const pt=path.getPointAtLength(len); const ahead=path.getPointAtLength(Math.min(totalLength,len+5)); const angle=Math.atan2(ahead.y-pt.y,ahead.x-pt.x)*180/Math.PI;
 
-      const paneW=worldPane.clientWidth, paneH=worldPane.clientHeight;
       const mobile=isMobileLayout();
-      const normalScale=((basePane?.width||paneW)/1000)*(mobile?1.13:1);
-      const targetW=mobile?paneW:innerWidth;
-      const targetH=mobile?paneH:innerHeight;
+      const normalScale=(basePane.width/1000)*(mobile?1.13:1);
+      const targetW=mobile?basePane.width:basePane.viewportWidth;
+      const targetH=mobile?basePane.height:basePane.viewportHeight;
       const coverScale=Math.max(targetW/HANDOFF_ARTBOARD_W,targetH/HANDOFF_ARTBOARD_H);
       viewportScale=lerp(normalScale,coverScale,handoff.t);
-      const normalScreenY=(basePane?.height||paneH)*.57;
+      const normalScreenY=basePane.height*.57;
       const handoffScreenY=targetH*.55;
       const screenY=lerp(normalScreenY,handoffScreenY,handoff.t);
       const finalXOffset=(targetW-HANDOFF_ARTBOARD_W*coverScale)/2;
@@ -380,12 +350,11 @@
 
       const deltaP=careerP-previousCareerP;
       previousCareerP=careerP;
-      previousSmoothP=smoothP;
       const distancePx=deltaP*totalLength;
       walkPhase += distancePx*.115;
       const targetCareerP=clamp(targetP/CAREER_SCROLL_END,0,1);
       const remaining=Math.abs(targetCareerP-careerP);
-      const walkStrength=clamp(remaining*95+Math.abs(distancePx)*.42,0,1);
+      const walkStrength=moving?clamp(remaining*95+Math.abs(distancePx)*.42,0,1):0;
       const stride=Math.sin(walkPhase);
       const opposite=Math.sin(walkPhase+Math.PI);
       const liftL=-Math.max(0,opposite)*5.6*walkStrength;
@@ -408,10 +377,9 @@
       setChapter(chapterFor(Math.min(careerP,HANDOFF_P)));
       const collected=updateEncounters(Math.min(careerP,HANDOFF_P));
       const armor=armorForCount(collected);
-      if(armor!==lastArmor){lastArmor=armor;applyArmor(armor,!forceHandoff)} else applyArmor(armor,false);
+      if(armor!==lastArmor){lastArmor=armor;applyArmor(armor,!forceHandoff)}
       updateScenes(Math.min(careerP,HANDOFF_P));
       storyPane.classList.remove('hide');
-      updateVideoStage(smoothP);
 
       // In the settled handoff frame the knight remains alive, but the gait is
       // intentionally held on a readable mid-stride pose for deterministic capture.
@@ -427,8 +395,27 @@
         knight.style.setProperty('--plumeSwing','2deg');
         knight.classList.add('walking');
       }
-      requestAnimationFrame(render);
+      return moving;
     }
 
+    const loop=createFrameLoop(render);
+    function wake(){if(!document.hidden)loop.wake()}
+    addEventListener('scroll',wake,{passive:true});
+    addEventListener('resize',()=>{updateLayout();wake()},{passive:true});
+    reducedMotion.addEventListener('change',wake);
+    document.addEventListener('visibilitychange',()=>{
+      videoController.setSuspended(document.hidden);
+      document.body.classList.toggle('page-hidden',document.hidden);
+      if(document.hidden)loop.stop();else wake();
+    });
+    addEventListener('pagehide',()=>{loop.stop();videoController.setSuspended(true)});
+    addEventListener('pageshow',()=>{videoController.setSuspended(false);wake()});
+    // Fetch after critical page content loads, well before the final scroll stage.
+    // No autoplay / play-pause priming, no gesture-dependent decode loop.
+    if(document.readyState==='complete')videoController.load();
+    else addEventListener('load',()=>videoController.load(),{once:true});
+    addEventListener('pointerdown',()=>videoController.load(),{passive:true});
     document.getElementById('replay').addEventListener('click',e=>{e.preventDefault();window.scrollTo({top:journey.offsetTop,behavior:'smooth'})});
-    addEventListener('resize',()=>{basePane=null;measureBasePane()}); updateLayout(); setChapter(0); applyArmor(forceHandoff?'emerald':'bronze'); if(forceHandoff){smoothP=CAREER_SCROLL_END*HANDOFF_END;targetP=smoothP;previousSmoothP=smoothP;previousCareerP=HANDOFF_END} requestAnimationFrame(render);
+    updateLayout();setChapter(0);applyArmor(forceHandoff?'emerald':'bronze');
+    if(forceHandoff){smoothP=CAREER_SCROLL_END*HANDOFF_END;targetP=smoothP;previousCareerP=HANDOFF_END}
+    wake();

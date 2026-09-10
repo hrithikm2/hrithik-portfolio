@@ -1,4 +1,4 @@
-    const chapters = [
+    export const chapters = [
       {p:0.00, years:'2019 — 2022', title:'Every path starts <em>small.</em>', body:'Computer Engineering was the beginning: strong fundamentals, steady curiosity, and the first proof that the work could compound.', challenge:'Turn curiosity into engineering discipline.', growth:'A foundation strong enough to keep climbing.', proof:'First Class Distinction · 9.7 GPA final semester', kit:'Foundations · Problem solving'},
       {p:0.14, years:'Dec 2021 — May 2022', title:'Then the work became <em>real.</em>', body:'Freelancing introduced clients, deadlines and users. A three-app food-delivery solution and Cricwin Live Guru turned classroom skill into shipped product.', challenge:'Build for people who actually depend on the result.', growth:'Confidence through shipping and feedback.', proof:'Cricwin Live Guru · 25K+ Google Play installs', kit:'Flutter · Dart · Firebase · REST APIs'},
       {p:0.28, years:'Feb 2022 — Sep 2022', title:'Pressure started carrying <em>weight.</em>', body:'At World of Wealth, the work expanded from implementation into product judgment: taking a fintech mobile application from concept toward an MVP for investment rounds.', challenge:'Move from feature execution to concept-to-MVP ownership.', growth:'Product sense and stakeholder coordination.', proof:'Fintech app · Concept → MVP', kit:'Flutter · Product coordination · Delivery'},
@@ -9,7 +9,7 @@
       {p:0.94, years:'Now and next', title:'The view changes, not the <em>mission.</em>', body:'LangChain agents, deterministic AST-based SQL guardrails, an AI Email Agent and end-to-end product ownership mark the latest transformation — but the road keeps going, with larger systems and harder challenges ahead.', challenge:'Expand the range without losing reliability, taste or clarity of execution.', growth:'Emerald armor: mobile + backend + platform + AI + ownership.', proof:'4+ years of professional engineering', kit:'LangChain · AI guardrails · Product ownership'}
     ];
 
-    const gemDefs = [
+    export const gemDefs = [
       {p:.11,label:'Ship',challenge:'First real clients',detail:'Build for people who depend on it',reward:'Shipping instinct',dark:false},
       {p:.18,label:'25K users',challenge:'Real users at scale',detail:'Cricwin grows beyond a side project',reward:'25K+ installs',dark:false},
       {p:.29,label:'MVP',challenge:'MVP pressure',detail:'Turn a fintech concept into something investable',reward:'Product judgment',dark:false},

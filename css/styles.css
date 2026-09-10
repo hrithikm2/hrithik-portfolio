@@ -462,3 +462,29 @@
       .mobileNext{padding:8px 10px}.mobileNextCopy strong{font-size:13px}
       .mobileStageHud{top:calc(var(--m-stage) - 58px)}
     }
+
+    /* Sleep when stationary; invisible combat/mist must not consume GPU time. */
+    .world{will-change:auto}
+    .demon:not(.in-view) .demonHalo{animation:none}
+    body:not(.is-moving) .world *,
+    body:not(.is-moving) .world *::before,
+    body:not(.is-moving) .world *::after,
+    body:not(.is-moving) .scene-layer::after,
+    .world-hidden .world *, .world-hidden .scene-layer::after,
+    .page-hidden *, .page-hidden *::before, .page-hidden *::after{
+      animation-play-state:paused!important
+    }
+    .world-hidden .worldPane{visibility:hidden}
+    .videoStage{transition:opacity .12s linear}
+    .tppScene{display:none}
+    @media(max-width:760px){
+      /* Avoid filtering the playing video through multiple translucent surfaces. */
+      .topbar,.video-active .topbar,.storyPane,.video-active .storyPane,.mobileStageChapter{
+        backdrop-filter:none!important;-webkit-backdrop-filter:none!important
+      }
+      .scene-layer::after{animation:none}
+      .grain{display:none}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation:none!important;transition:none!important}
+    }
