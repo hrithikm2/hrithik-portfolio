@@ -11,11 +11,53 @@
     }
     let showJourneyIntro = true;
     try { showJourneyIntro = Date.now() - Number(localStorage.getItem(introCacheKey) || 0) > introMaxAge; } catch {}
+    let introAwaitingNextScroll = false;
+    let introHoldUntil = 0;
     if (showJourneyIntro) {
-      journeyIntroDismiss.addEventListener('click', () => {
+      const dismissIntro = () => {
         try { localStorage.setItem(introCacheKey, String(Date.now())); } catch {}
         journeyIntro.classList.add('is-hidden');
-      }, { once: true });
+        window.removeEventListener('wheel', onIntroWheel, true);
+        window.removeEventListener('touchstart', onIntroTouchStart, true);
+        window.removeEventListener('touchmove', onIntroTouchMove, true);
+        window.removeEventListener('touchend', onIntroTouchEnd, true);
+      };
+      const onIntroWheel = (event) => {
+        if (Math.abs(event.deltaY) > 1 || Math.abs(event.deltaX) > 1) {
+          event.preventDefault();
+          introAwaitingNextScroll = true;
+          introHoldUntil = performance.now() + 180;
+          dismissIntro();
+        }
+      };
+      let introTouchStart = null;
+      const onIntroTouchStart = (event) => {
+        if (event.touches.length === 1) introTouchStart = {x:event.touches[0].clientX,y:event.touches[0].clientY};
+      };
+      const onIntroTouchEnd = (event) => {
+        if (!introTouchStart || !event.changedTouches.length) return;
+        const touch = event.changedTouches[0];
+        const distance = Math.hypot(touch.clientX - introTouchStart.x, touch.clientY - introTouchStart.y);
+        introTouchStart = null;
+        if (distance > 28) dismissIntro();
+      };
+      const onIntroTouchMove = (event) => {
+        if (!introTouchStart || !event.touches.length) return;
+        const touch = event.touches[0];
+        const distance = Math.hypot(touch.clientX - introTouchStart.x, touch.clientY - introTouchStart.y);
+        if (distance > 28) {
+          event.preventDefault();
+          introAwaitingNextScroll = true;
+          introHoldUntil = performance.now() + 180;
+          dismissIntro();
+          introTouchStart = null;
+        }
+      };
+      journeyIntroDismiss.addEventListener('click', dismissIntro, { once: true });
+      window.addEventListener('wheel', onIntroWheel, { capture:true, passive:false });
+      window.addEventListener('touchstart', onIntroTouchStart, { capture:true, passive:true });
+      window.addEventListener('touchmove', onIntroTouchMove, { capture:true, passive:false });
+      window.addEventListener('touchend', onIntroTouchEnd, { capture:true, passive:true });
     } else {
       journeyIntro.classList.add('is-hidden');
     }
@@ -338,6 +380,7 @@
 
     function render(now,dt){
       targetP=pageProgress();
+      if(now < introHoldUntil) targetP=smoothP;
       const ease=1-Math.pow(.0006,dt/1000);
       smoothP += (targetP-smoothP)*Math.min(.16,ease*9);
       const moving=!reducedMotion.matches && Math.abs(targetP-smoothP)>.00001;
@@ -422,7 +465,10 @@
 
     const loop=createFrameLoop(render);
     function wake(){if(!document.hidden)loop.wake()}
-    addEventListener('scroll',wake,{passive:true});
+    addEventListener('scroll',()=>{
+      if(introAwaitingNextScroll){introAwaitingNextScroll=false;return}
+      wake();
+    },{passive:true});
     addEventListener('resize',()=>{updateLayout();wake()},{passive:true});
     reducedMotion.addEventListener('change',wake);
     document.addEventListener('visibilitychange',()=>{

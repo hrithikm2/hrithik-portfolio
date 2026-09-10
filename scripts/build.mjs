@@ -5,11 +5,11 @@ import { fileURLToPath } from 'node:url';
 const root = new URL('../', import.meta.url);
 const dist = new URL('dist/', root);
 const files = [
-  'index.html', 'contact.html', '404.html', '_headers',
+  'index.html', 'contact.html', 'resume.html', '404.html', '_headers',
   'css/styles.css', 'css/contact.css', 'js/app.js', 'js/data.js',
   'js/frame-loop.js', 'js/video-controller.js',
   'assets/transition-start.jpg',
-  'assets/hrithik-mishra.jpg', 'assets/hrithik-mishra-resume.pdf',
+  'assets/hrithik-mishra.jpg', 'assets/hrithik-mishra-resume.pdf', 'assets/hrithik-mishra-resume.docx',
   'assets/transition-mobile-v2.mp4', 'assets/transition-desktop-v2.mp4',
 ];
 await rm(dist, { recursive: true, force: true });
