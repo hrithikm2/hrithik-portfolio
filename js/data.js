@@ -11,12 +11,12 @@
 
     export const gemDefs = [
       {p:.11,label:'Freelance delivery',challenge:'Client applications',detail:'Built and shipped complete mobile products',reward:'Production delivery',dark:false},
-      {p:.18,label:'25K+ installs',challenge:'Cricwin Live Guru',detail:'Reached 25K+ Google Play installs',reward:'25K+ installs',dark:false},
-      {p:.29,label:'Fintech MVP',challenge:'World of Wealth',detail:'Moved a fintech app from concept to MVP',reward:'Product delivery',dark:false},
-      {p:.40,label:'Team leadership',challenge:'KodeKrew',detail:'Led two Flutter developers',reward:'Technical leadership',dark:false},
-      {p:.53,label:'Clean Architecture',challenge:'Cropdata',detail:'Applied BLoC and Clean Architecture in production',reward:'Maintainable systems',dark:false},
-      {p:.65,label:'Production mobile',challenge:'TheBlock',detail:'Calling, media, caching and releases',reward:'Mobile reliability',dark:true},
-      {p:.73,label:'Defect reduction',challenge:'TheBlock',detail:'Resolved 200–300 defects and 50+ bottlenecks',reward:'Reliability work',dark:true},
+      {p:.18,label:'25K+ installs',challenge:'User adoption',detail:'Reached 25K+ Google Play installs',reward:'25K+ installs',dark:false},
+      {p:.29,label:'Fintech MVP',challenge:'Fintech delivery',detail:'Moved a fintech app from concept to MVP',reward:'Product delivery',dark:false},
+      {p:.40,label:'Team leadership',challenge:'Team leadership',detail:'Led two Flutter developers',reward:'Technical leadership',dark:false},
+      {p:.53,label:'Clean Architecture',challenge:'System architecture',detail:'Applied BLoC and Clean Architecture in production',reward:'Maintainable systems',dark:false},
+      {p:.65,label:'Production mobile',challenge:'Production reliability',detail:'Calling, media, caching and releases',reward:'Mobile reliability',dark:true},
+      {p:.73,label:'Defect reduction',challenge:'Production reliability',detail:'Resolved 200–300 defects and 50+ bottlenecks',reward:'Reliability work',dark:true},
       {p:.83,label:'Backend and platform',challenge:'Current scope',detail:'FastAPI, WebSockets, Docker and Kubernetes',reward:'Full-stack range',dark:true},
       {p:.91,label:'AI engineering',challenge:'Current scope',detail:'Agents, SQL guardrails and AI email workflows',reward:'Reliable AI features',dark:true}
     ];
