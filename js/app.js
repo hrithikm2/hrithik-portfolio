@@ -362,10 +362,15 @@
       return {t,settled};
     }
 
-    const isAndroidChrome=/Android/i.test(navigator.userAgent) && /Chrome\//i.test(navigator.userAgent);
-    if(isAndroidChrome){transitionVideo.style.display='none';androidTransitionFrames.style.display='block'}
-    const videoController=isAndroidChrome
+    const isAndroid = /Android/i.test(navigator.userAgent) || new URLSearchParams(location.search).has('frames');
+    if(isAndroid){transitionVideo.style.display='none';androidTransitionFrames.style.display='block'}
+    const videoController=isAndroid
       ? createAndroidFrameController(androidTransitionFrames,{
+          baseUrl:'assets/android-frames',
+          sheetCount:12,
+          framesPerSheet:12,
+          frameWidth:640,
+          frameHeight:360,
           onFrame(){videoHasFrame=true;wake()},onError(){videoHasFrame=false;wake()}
         })
       : createScrollVideo(transitionVideo,{
@@ -374,20 +379,49 @@
           onFrame(){videoHasFrame=true;wake()},onError(){videoHasFrame=false;wake()}
         });
 
+    let lastVideoOpacity=-1;
+    let lastVideoVisibility='';
+    let lastHandoffOpacity=-1;
+    let lastHandoffVisibility='';
+
     function updateVideoStage(p){
       const blend=smoothstep01(clamp((p-VIDEO_BLEND_START)/(VIDEO_START-VIDEO_BLEND_START),0,1));
       const scrub=clamp((p-VIDEO_START)/(VIDEO_END-VIDEO_START),0,1);
       const active=p>=VIDEO_BLEND_START;
       document.body.classList.toggle('video-active',active);
-      // Keep the real first-frame image visible until a decoded video frame exists.
-      videoStage.style.opacity=String(videoHasFrame?blend:0);
-      videoStage.style.visibility=active && videoHasFrame?'visible':'hidden';
+
+      const targetOpacity=videoHasFrame?blend:0;
+      if(Math.abs(lastVideoOpacity-targetOpacity)>.001){
+        lastVideoOpacity=targetOpacity;
+        videoStage.style.opacity=String(targetOpacity);
+      }
+
+      const targetVisibility=(active && videoHasFrame)?'visible':'hidden';
+      if(lastVideoVisibility!==targetVisibility){
+        lastVideoVisibility=targetVisibility;
+        videoStage.style.visibility=targetVisibility;
+      }
+
       videoController.setProgress(scrub);
-      if(active){handoffPlate.style.visibility='visible';handoffPlate.style.opacity='1'}
-      // Restore the plate when scrolling backwards out of the video interval.
-      else {handoffPlate.style.opacity=String(renderedHandoff);handoffPlate.style.visibility=renderedHandoff>0?'visible':'hidden'}
+
+      if(active){
+        if(lastHandoffVisibility!=='visible'){lastHandoffVisibility='visible';handoffPlate.style.visibility='visible'}
+        if(lastHandoffOpacity!==1){lastHandoffOpacity=1;handoffPlate.style.opacity='1'}
+      } else {
+        const plateOpacity=renderedHandoff;
+        if(Math.abs(lastHandoffOpacity-plateOpacity)>.001){
+          lastHandoffOpacity=plateOpacity;
+          handoffPlate.style.opacity=String(plateOpacity);
+        }
+        const plateVis=plateOpacity>0?'visible':'hidden';
+        if(lastHandoffVisibility!==plateVis){
+          lastHandoffVisibility=plateVis;
+          handoffPlate.style.visibility=plateVis;
+        }
+      }
     }
 
+    let lastProgressColor='';
     function render(now,dt){
       targetP=pageProgress();
       if(now < introHoldUntil) targetP=smoothP;
@@ -396,7 +430,10 @@
       const moving=!reducedMotion.matches && Math.abs(targetP-smoothP)>.00001;
       if(!moving)smoothP=targetP;
       const progressColor=smoothP<.28?'#a8663b':smoothP<.52?'#aeb5be':smoothP<.76?'#d3a643':'#3aa27a';
-      document.documentElement.style.setProperty('--journey-progress-color',progressColor);
+      if(progressColor!==lastProgressColor){
+        lastProgressColor=progressColor;
+        document.documentElement.style.setProperty('--journey-progress-color',progressColor);
+      }
       journeyProgressFill.style.transform=`scaleX(${smoothP})`;
       if(smoothP>=.998 && !completionShown){
         completionShown=true;

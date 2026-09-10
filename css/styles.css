@@ -296,7 +296,7 @@
       .scene{z-index:0;overflow:hidden;background:#405144}
       .worldPane{z-index:10;border-bottom:1px solid rgba(17,19,23,.12);box-shadow:0 18px 42px rgba(24,31,27,.16)}
       .handoffPlate,.videoStage{border-bottom:1px solid rgba(17,19,23,.12);box-shadow:0 18px 42px rgba(24,31,27,.16)}
-      .handoffPlate img,.videoStage video,.videoStage canvas{object-fit:contain!important;object-position:center center!important;background:#26392d}
+      .handoffPlate img,.videoStage video,.videoStage canvas{object-fit:cover!important;object-position:center center!important;background:#26392d}
       .videoStage::after{background:linear-gradient(180deg,rgba(13,18,16,.02) 0%,transparent 68%,rgba(13,18,16,.18) 100%);opacity:.55}
 
       /* Compact glass HUD is the mobile equivalent of the desktop overlay UI and stays
@@ -481,7 +481,6 @@
       animation-play-state:paused!important
     }
     .world-hidden .worldPane{visibility:hidden}
-    .videoStage{transition:opacity .12s linear}
     .tppScene{display:none}
     @media(max-width:760px){
       /* Avoid filtering the playing video through multiple translucent surfaces. */
