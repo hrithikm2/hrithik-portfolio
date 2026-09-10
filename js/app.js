@@ -84,7 +84,7 @@
           <path class="demonCoreInner" d="M50 60 L54 66 L50 73 L46 66 Z"/>
           <path d="M39 86 Q50 91 61 86" fill="none" stroke="rgba(255,255,255,.24)" stroke-width="2" stroke-linecap="round"/>
         </svg>
-        <div class="demonLabel"><span>Challenge</span><strong>${g.challenge}</strong><em>Defeat → ${g.reward} gem</em></div>`;
+        <div class="demonLabel"><span>Career milestone</span><strong>${g.challenge}</strong><em>Result → ${g.reward}</em></div>`;
       world.appendChild(demon);
 
       const gem=document.createElement('div');
@@ -141,7 +141,7 @@
         if(mobileNextTitle){
           const next=chapters[Math.min(i+1,chapters.length-1)];
           mobileNextTitle.textContent=next.title.replace(/<[^>]+>/g,'').replace(/\.$/,'');
-          if(mobileNextEyebrow) mobileNextEyebrow.textContent=i===chapters.length-1?'Keep going':'Next chapter';
+          if(mobileNextEyebrow) mobileNextEyebrow.textContent=i===chapters.length-1?'Current scope':'Next role';
         }
         story.classList.remove('fade');
       },130);
@@ -156,17 +156,18 @@
     }
     function applyArmor(stage,announce=false){
       const palette={
-        bronze:{main:'#a8663b',dark:'#75452c',light:'#c98c63',cape:'#6f4536',plume:'#75452c',text:'Bronze armor · apprentice'},
-        silver:{main:'#c5cbd2',dark:'#858d98',light:'#f0f2f4',cape:'#56616d',plume:'#818996',text:'Silver armor · leader'},
-        gold:{main:'#d3a643',dark:'#8f6e25',light:'#f1d987',cape:'#6c5130',plume:'#b3832f',text:'Gold armor · architect'},
+        bronze:{main:'#a8663b',dark:'#75452c',light:'#c98c63',cape:'#6f4536',plume:'#75452c',text:'Foundations · engineering fundamentals'},
+        silver:{main:'#c5cbd2',dark:'#858d98',light:'#f0f2f4',cape:'#56616d',plume:'#818996',text:'Team delivery · technical leadership'},
+        gold:{main:'#d3a643',dark:'#8f6e25',light:'#f1d987',cape:'#6c5130',plume:'#b3832f',text:'Architecture · maintainable systems'},
         /* Video-matched final evolution: aged steel shell with emerald energy/cape. */
-        emerald:{main:'#7f9187',dark:'#30473d',light:'#c5d0c9',cape:'#163a2d',plume:'#315f4b',text:'Emerald armor · builder / owner'}
+        emerald:{main:'#7f9187',dark:'#30473d',light:'#c5d0c9',cape:'#163a2d',plume:'#315f4b',text:'Product engineering · mobile, backend, AI'}
       }[stage];
       knight.style.setProperty('--armor-main',palette.main); knight.style.setProperty('--armor-dark',palette.dark); knight.style.setProperty('--armor-light',palette.light); knight.style.setProperty('--cape',palette.cape); knight.style.setProperty('--plume',palette.plume);
       knight.style.setProperty('--capeOpacity',stage==='bronze'?'.34':stage==='silver'?'.48':stage==='gold'?'.72':'.88'); knight.style.setProperty('--plumeOpacity',stage==='bronze'?'.28':stage==='silver'?'.45':stage==='gold'?'.72':'1');
       knight.classList.toggle('final',stage==='emerald'); fields.armorText.textContent=palette.text; const armorIndicator=stage==='emerald'?'#3aa27a':palette.main; fields.armorDot.style.background=armorIndicator; fields.armorDot.style.boxShadow=`0 0 0 4px ${armorIndicator}22`; if(mobileStageDot){mobileStageDot.style.background=armorIndicator;mobileStageDot.style.boxShadow=`0 0 0 3px ${armorIndicator}2b`;} document.documentElement.style.setProperty('--mobile-accent',armorIndicator);
       if(announce){
-        upgradeToast.textContent=stage.charAt(0).toUpperCase()+stage.slice(1)+' armor unlocked'; upgradeToast.classList.add('show'); setTimeout(()=>upgradeToast.classList.remove('show'),1250);
+        const announcement={silver:'Team delivery and leadership',gold:'Architecture and maintainability',emerald:'Mobile, backend and AI scope'}[stage]||'Engineering foundations';
+        upgradeToast.textContent=announcement; upgradeToast.classList.add('show'); setTimeout(()=>upgradeToast.classList.remove('show'),1250);
       }
     }
 
