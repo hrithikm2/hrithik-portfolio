@@ -13,6 +13,15 @@
   <!-- The visual scene stays composed here; styling and behavior live in dedicated modules. -->
 </head>
 <body>
+  <section class="journeyIntro" id="journeyIntro" aria-live="polite">
+    <div class="journeyIntroGlow"></div>
+    <div class="journeyIntroMark">H</div>
+    <p class="journeyIntroKicker">Hrithik Mishra · Portfolio</p>
+    <h1 id="journeyIntroTitle">Scroll to review the journey.</h1>
+    <p id="journeyIntroHint">Use your trackpad or mouse wheel to move through the timeline.</p>
+    <div class="journeyIntroProgress"><span></span></div>
+    <button class="journeyIntroDismiss" id="journeyIntroDismiss" type="button">Got it <span>↗</span></button>
+  </section>
   <main class="journey" id="journey">
     <div class="viewport">
       <div class="scene">
@@ -27,7 +36,7 @@
           <div class="monogram">H</div>
           <div><strong>Hrithik Mishra</strong><span>Mobile Software Engineer · Full-stack Product Engineering</span></div>
         </div>
-        <div class="toplinks"><span>Scroll to review the timeline</span><a href="mailto:iizhrithik@gmail.com">Contact</a></div>
+        <div class="toplinks"><span>Scroll to review the timeline</span><a href="contact.html">Contact</a></div>
       </header>
 
       <div class="mobileStageHud" aria-hidden="true">
@@ -253,7 +262,7 @@
       <section class="finalPanel" id="finalPanel">
         <h2>Current focus: product engineering.</h2>
         <p>Hrithik builds mobile products and increasingly owns the backend, platform and AI systems behind them. His experience spans Flutter, production reliability, APIs, deployments, security and practical AI workflows.</p>
-        <div class="finalActions"><a class="button primary" href="mailto:iizhrithik@gmail.com">Start a conversation</a><a class="button" href="#" id="replay">Replay</a></div>
+        <div class="finalActions"><a class="button primary" href="assets/hrithik-mishra-resume.pdf" target="_blank" rel="noopener">View resume</a><a class="button" href="contact.html">Contact</a><a class="button" href="#" id="replay">Replay</a></div>
       </section>
       <div class="grain"></div>
     </div>

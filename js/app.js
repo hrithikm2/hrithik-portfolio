@@ -1,3 +1,24 @@
+    const journeyIntro = document.getElementById('journeyIntro');
+    const journeyIntroTitle = document.getElementById('journeyIntroTitle');
+    const journeyIntroHint = document.getElementById('journeyIntroHint');
+    const journeyIntroDismiss = document.getElementById('journeyIntroDismiss');
+    const introCacheKey = 'hrithik-portfolio-intro-seen-at';
+    const introMaxAge = 7 * 24 * 60 * 60 * 1000;
+    const isIntroMobile = matchMedia('(max-width: 760px)').matches || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    if (isIntroMobile) {
+      journeyIntroTitle.textContent = 'Scroll to review the journey.';
+      journeyIntroHint.textContent = 'Swipe up to move through the timeline.';
+    }
+    let showJourneyIntro = true;
+    try { showJourneyIntro = Date.now() - Number(localStorage.getItem(introCacheKey) || 0) > introMaxAge; } catch {}
+    if (showJourneyIntro) {
+      journeyIntroDismiss.addEventListener('click', () => {
+        try { localStorage.setItem(introCacheKey, String(Date.now())); } catch {}
+        journeyIntro.classList.add('is-hidden');
+      }, { once: true });
+    } else {
+      journeyIntro.classList.add('is-hidden');
+    }
     import { chapters, gemDefs } from './data.js';
     import { createScrollVideo } from './video-controller.js';
     import { createFrameLoop } from './frame-loop.js';
