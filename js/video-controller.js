@@ -46,6 +46,9 @@ export function createScrollVideo(video, {
   function metadata() {
     duration = Number.isFinite(video.duration) ? video.duration : 0;
     pump();
+    // Chrome can dispatch metadata before its first seekable frame is ready.
+    // Retry on the next task so the handoff does not remain on the poster frame.
+    setTimeout(pump, 0);
   }
 
   function frame() {
@@ -58,10 +61,15 @@ export function createScrollVideo(video, {
   function mediaError() { fail(video.error || new Error('Video decode failed')); }
   video.addEventListener('loadedmetadata', metadata);
   video.addEventListener('loadeddata', frame);
+  video.addEventListener('canplay', frame);
+  video.addEventListener('durationchange', metadata);
   video.addEventListener('seeked', frame);
   video.addEventListener('error', mediaError);
   video.muted = true;
   video.playsInline = true;
+  if ('requestVideoFrameCallback' in video) {
+    video.requestVideoFrameCallback(() => frame());
+  }
 
   async function load() {
     if (destroyed || objectURL || loading) return loading;
@@ -106,6 +114,8 @@ export function createScrollVideo(video, {
       abort?.abort();
       video.removeEventListener('loadedmetadata', metadata);
       video.removeEventListener('loadeddata', frame);
+      video.removeEventListener('canplay', frame);
+      video.removeEventListener('durationchange', metadata);
       video.removeEventListener('seeked', frame);
       video.removeEventListener('error', mediaError);
       video.pause();

@@ -24,6 +24,11 @@
   </section>
   <main class="journey" id="journey">
     <div class="viewport">
+      <div class="journeyProgress" aria-hidden="true"><span id="journeyProgressFill"></span></div>
+      <div class="journeyComplete" id="journeyComplete" aria-hidden="true">
+        <span class="journeyCompleteRing"></span>
+        <svg viewBox="0 0 52 52"><path d="M15 27.5 23 35l15-18"/></svg>
+      </div>
       <div class="scene">
         <div class="scene-layer scene-0" id="scene0"></div>
         <div class="scene-layer scene-1" id="scene1" style="opacity:0"></div>
@@ -148,6 +153,7 @@
 
       <section class="videoStage" id="videoStage" aria-hidden="true">
         <video id="transitionVideo" muted playsinline preload="auto" poster="assets/transition-start.jpg" tabindex="-1"></video>
+        <canvas id="androidTransitionFrames" aria-hidden="true"></canvas>
       </section>
 
       <section class="tppScene" id="tppScene" aria-hidden="true">

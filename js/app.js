@@ -63,6 +63,7 @@
     }
     import { chapters, gemDefs } from './data.js';
     import { createScrollVideo } from './video-controller.js';
+    import { createAndroidFrameController } from './android-frame-controller.js';
     import { createFrameLoop } from './frame-loop.js';
     const journey = document.getElementById('journey');
     const worldPane = document.getElementById('worldPane');
@@ -77,9 +78,12 @@
     const handoffPlate = document.getElementById('handoffPlate');
     const videoStage = document.getElementById('videoStage');
     const transitionVideo = document.getElementById('transitionVideo');
+    const androidTransitionFrames = document.getElementById('androidTransitionFrames');
     const tppScene = document.getElementById('tppScene');
     const tppKnight = document.getElementById('tppKnight');
     const futureCopy = document.getElementById('futureCopy');
+    const journeyProgressFill = document.getElementById('journeyProgressFill');
+    const journeyComplete = document.getElementById('journeyComplete');
     const roadCaption = document.querySelector('.roadCaption');
     const mobileStageIndex = document.getElementById('mobileStageIndex');
     const mobileStageYears = document.getElementById('mobileStageYears');
@@ -102,6 +106,7 @@
     let scrollSpan = 1;
     let renderedCareerP = -1;
     let renderedHandoff = -1;
+    let completionShown = false;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
     // Preserve the existing career pacing in the first ~78% of the long scroll,
@@ -357,12 +362,17 @@
       return {t,settled};
     }
 
-    const videoController=createScrollVideo(transitionVideo,{
-      url:isMobileLayout() || navigator.connection?.saveData
-        ? 'assets/transition-mobile-v2.mp4' : 'assets/transition-desktop-v2.mp4',
-      onFrame(){videoHasFrame=true;wake()},
-      onError(){videoHasFrame=false;wake()}
-    });
+    const isAndroidChrome=/Android/i.test(navigator.userAgent) && /Chrome\//i.test(navigator.userAgent);
+    if(isAndroidChrome){transitionVideo.style.display='none';androidTransitionFrames.style.display='block'}
+    const videoController=isAndroidChrome
+      ? createAndroidFrameController(androidTransitionFrames,{
+          onFrame(){videoHasFrame=true;wake()},onError(){videoHasFrame=false;wake()}
+        })
+      : createScrollVideo(transitionVideo,{
+          url:isMobileLayout() || navigator.connection?.saveData
+            ? 'assets/transition-mobile-v2.mp4' : 'assets/transition-desktop-v2.mp4',
+          onFrame(){videoHasFrame=true;wake()},onError(){videoHasFrame=false;wake()}
+        });
 
     function updateVideoStage(p){
       const blend=smoothstep01(clamp((p-VIDEO_BLEND_START)/(VIDEO_START-VIDEO_BLEND_START),0,1));
@@ -385,6 +395,15 @@
       smoothP += (targetP-smoothP)*Math.min(.16,ease*9);
       const moving=!reducedMotion.matches && Math.abs(targetP-smoothP)>.00001;
       if(!moving)smoothP=targetP;
+      const progressColor=smoothP<.28?'#a8663b':smoothP<.52?'#aeb5be':smoothP<.76?'#d3a643':'#3aa27a';
+      document.documentElement.style.setProperty('--journey-progress-color',progressColor);
+      journeyProgressFill.style.transform=`scaleX(${smoothP})`;
+      if(smoothP>=.998 && !completionShown){
+        completionShown=true;
+        journeyComplete.classList.remove('show');
+        void journeyComplete.offsetWidth;
+        journeyComplete.classList.add('show');
+      } else if(smoothP<.97){ completionShown=false; journeyComplete.classList.remove('show'); }
       document.body.classList.toggle('is-moving',moving);
 
       const careerP=Math.min(clamp(smoothP/CAREER_SCROLL_END,0,1),HANDOFF_P);

@@ -27,6 +27,7 @@
     body{overflow-x:hidden}
     a{color:inherit;text-decoration:none}
     button{font:inherit}
+    .journeyProgress{position:absolute;z-index:60;left:0;right:0;top:0;height:3px;background:rgba(17,19,23,.1);pointer-events:none}.journeyProgress span{display:block;width:100%;height:100%;background:var(--journey-progress-color,#a8663b);box-shadow:0 0 12px color-mix(in srgb,var(--journey-progress-color,#a8663b) 55%,transparent);transform:scaleX(0);transform-origin:left center;will-change:transform;transition:background-color .25s ease,box-shadow .25s ease}.journeyComplete{position:absolute;z-index:70;left:50%;top:50%;width:78px;height:78px;display:grid;place-items:center;opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(.7)}.journeyComplete svg{position:relative;width:52px;height:52px;padding:13px;border-radius:50%;background:rgba(18,31,25,.9);box-shadow:0 12px 40px rgba(0,0,0,.25),inset 0 0 0 1px color-mix(in srgb,var(--journey-progress-color,#3aa27a) 50%,transparent);fill:none;stroke:var(--journey-progress-color,#3aa27a);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.journeyComplete svg path{stroke-dasharray:32;stroke-dashoffset:32}.journeyCompleteRing{position:absolute;inset:0;border:1px solid var(--journey-progress-color,#3aa27a);border-radius:50%}.journeyComplete.show{animation:journeyCompleteIn 2.2s cubic-bezier(.2,.75,.25,1) both}.journeyComplete.show .journeyCompleteRing{animation:journeyCompleteRipple 1.5s .08s ease-out both}.journeyComplete.show svg path{animation:journeyCheck .5s .2s ease-out forwards}@keyframes journeyCompleteIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}15%,72%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.08)}}@keyframes journeyCompleteRipple{0%{opacity:0;transform:scale(.45)}20%{opacity:1}100%{opacity:0;transform:scale(2.2)}}@keyframes journeyCheck{to{stroke-dashoffset:0}}
     .journeyIntro{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;align-content:center;padding:24px;background:radial-gradient(circle at 50% 44%,rgba(61,159,117,.22),transparent 34%),#111713;color:#f4f0e8;text-align:center;transition:opacity .55s ease,visibility .55s ease}.journeyIntro.is-hidden{opacity:0;visibility:hidden;pointer-events:none}.journeyIntroGlow{position:absolute;width:min(70vw,620px);aspect-ratio:1;border:1px solid rgba(120,226,175,.15);border-radius:50%;box-shadow:0 0 100px rgba(58,162,122,.1),inset 0 0 80px rgba(58,162,122,.06);animation:introPulse 2s ease-out both}.journeyIntroMark{position:relative;display:grid;place-items:center;width:58px;height:58px;overflow:hidden;margin-bottom:25px;border:1px solid rgba(255,255,255,.42);border-radius:50%;font:400 31px Newsreader,serif;animation:introRise .7s .08s both}.journeyIntroKicker{position:relative;margin:0 0 16px;color:#7ae7b0;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;animation:introRise .7s .15s both}.journeyIntro h1{position:relative;max-width:12ch;margin:0;font:400 clamp(42px,7vw,78px)/.9 Newsreader,serif;letter-spacing:-.05em;animation:introRise .7s .22s both}.journeyIntroHint{position:relative;max-width:38ch;margin:22px 0 26px;color:rgba(244,240,232,.62);font-size:14px;line-height:1.5;animation:introRise .7s .3s both}.journeyIntroProgress{position:relative;width:110px;height:2px;overflow:hidden;margin:auto;background:rgba(255,255,255,.18);animation:introRise .7s .36s both}.journeyIntroProgress span{display:block;width:100%;height:100%;background:#7ae7b0;transform-origin:left;animation:introProgress 2s linear both}.journeyIntroDismiss{position:relative;margin-top:30px;border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:11px 17px;background:rgba(255,255,255,.08);color:#f4f0e8;cursor:pointer;font-size:13px;animation:introRise .7s .42s both}.journeyIntroDismiss:hover{background:rgba(122,231,176,.18);border-color:#7ae7b0}.journeyIntroDismiss span{margin-left:8px;color:#7ae7b0;font-size:16px}
     @media(max-width:760px){.journeyIntro h1{font-size:clamp(43px,13vw,64px)}.journeyIntroHint{font-size:13px;max-width:29ch}.journeyIntroMark{width:52px;height:52px;font-size:28px}}
     @media(prefers-reduced-motion:reduce){.journeyIntroGlow,.journeyIntroMark,.journeyIntroKicker,.journeyIntro h1,.journeyIntroHint,.journeyIntroProgress,.journeyIntroProgress span{animation:none}.journeyIntroProgress span{transform:scaleX(1)}}
@@ -84,7 +85,7 @@
     .handoff-ready .roadCaption,.handoff-ready .upgradeToast{pointer-events:none}
     .handoff-ready .tppScene,.handoff-ready .finalPanel{opacity:0!important;pointer-events:none!important}
     .videoStage{position:absolute;inset:0;z-index:15;opacity:0;pointer-events:none;background:#111;overflow:hidden;will-change:opacity}
-    .videoStage video{display:block;width:100%;height:100%;object-fit:cover;object-position:center center;background:#111}
+    .videoStage video,.videoStage canvas{display:block;width:100%;height:100%;object-fit:cover;object-position:center center;background:#111}.videoStage canvas{display:none}
     .videoStage::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(13,18,16,.08),transparent 38%);opacity:.35}
     .video-active .storyPane{background:linear-gradient(90deg,rgba(244,240,232,.92) 0%,rgba(244,240,232,.78) 70%,rgba(244,240,232,.08) 94%,rgba(244,240,232,0) 100%);backdrop-filter:blur(4px)}
     .video-active .topbar{background:linear-gradient(180deg,rgba(244,240,232,.70),rgba(244,240,232,.16));backdrop-filter:blur(12px)}
@@ -274,6 +275,7 @@
       html,body{background:var(--paper);overscroll-behavior-y:none}
       .journey{height:1050vh;background:var(--paper)}
       .viewport{height:100svh;min-height:100svh;background:var(--paper);overflow:hidden}
+      @supports (height:100dvh){.viewport{height:100dvh;min-height:100dvh}}
 
       .topbar{
         height:var(--m-top);padding:0 14px 0 13px;
@@ -294,7 +296,7 @@
       .scene{z-index:0;overflow:hidden;background:#405144}
       .worldPane{z-index:10;border-bottom:1px solid rgba(17,19,23,.12);box-shadow:0 18px 42px rgba(24,31,27,.16)}
       .handoffPlate,.videoStage{border-bottom:1px solid rgba(17,19,23,.12);box-shadow:0 18px 42px rgba(24,31,27,.16)}
-      .handoffPlate img,.videoStage video{object-fit:contain!important;object-position:center center!important;background:#26392d}
+      .handoffPlate img,.videoStage video,.videoStage canvas{object-fit:contain!important;object-position:center center!important;background:#26392d}
       .videoStage::after{background:linear-gradient(180deg,rgba(13,18,16,.02) 0%,transparent 68%,rgba(13,18,16,.18) 100%);opacity:.55}
 
       /* Compact glass HUD is the mobile equivalent of the desktop overlay UI and stays
@@ -357,7 +359,7 @@
       }
       .scene{background:#405144}
       .worldPane,.handoffPlate,.videoStage{border-bottom:0;box-shadow:0 24px 54px rgba(23,31,26,.22)}
-      .handoffPlate img,.videoStage video{
+      .handoffPlate img,.videoStage video,.videoStage canvas{
         object-fit:cover!important;object-position:center center!important
       }
       .videoStage::after{
@@ -397,7 +399,7 @@
         top:calc(var(--m-stage) - var(--m-sheet-overlap))!important;
         left:10px!important;right:10px!important;bottom:0!important;width:auto!important;
         padding:27px 15px max(14px,env(safe-area-inset-bottom,14px));
-        display:flex!important;flex-direction:column;overflow:hidden;
+        display:flex!important;flex-direction:column;overflow:hidden;pointer-events:none;
         background:linear-gradient(180deg,rgba(248,245,239,.985) 0%,rgba(244,239,230,.985) 78%,rgba(239,232,220,.99) 100%);
         border:1px solid rgba(255,255,255,.82);border-bottom:0;
         border-radius:28px 28px 0 0;
@@ -416,11 +418,11 @@
       .chapterLine{gap:8px;margin-bottom:10px;font-size:7.5px;letter-spacing:.17em;color:rgba(17,19,23,.47)}
       .chapterLine::before{width:22px;background:rgba(17,19,23,.28)}
       .story h1{
-        font-size:clamp(43px,11.8vw,54px);line-height:.84;letter-spacing:-.052em;
+        font-size:clamp(38px,10.5vw,49px);line-height:.84;letter-spacing:-.052em;
         max-width:9.2ch;margin:0 0 13px
       }
       .story h1 em{color:#7c5a3c}
-      .storyText{font-size:12.5px;line-height:1.48;margin:0 0 14px;max-width:47ch;color:rgba(17,19,23,.64)}
+      .storyText{font-size:11.5px;line-height:1.38;margin:0 0 10px;max-width:47ch;color:rgba(17,19,23,.64)}
       .storyRule{margin:0 0 10px;background:rgba(17,19,23,.10)}
       .storyMeta{grid-template-columns:1fr 1fr;gap:0 12px;border-bottom:0}
       .metaBlock{padding:8px 0 9px;border-top:1px solid rgba(17,19,23,.08)}
@@ -434,7 +436,7 @@
       }
 
       /* Progress and next-chapter teaser fill the previous dead zone and keep momentum. */
-      .mobileJourneyFooter{display:block;margin-top:auto;padding-top:12px;pointer-events:auto}
+      .mobileJourneyFooter{display:block;margin-top:auto;padding-top:8px;pointer-events:none}
       .mobileProgressHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
       .mobileProgressHead span{font-size:7.5px;letter-spacing:.17em;text-transform:uppercase;color:rgba(17,19,23,.40)}
       .mobileProgressHead strong{font-size:8px;letter-spacing:.14em;font-weight:600;color:rgba(17,19,23,.54)}
