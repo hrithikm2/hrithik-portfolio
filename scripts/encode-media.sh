@@ -5,7 +5,7 @@ set -euo pipefail
 encoder=${FFMPEG:-ffmpeg}
 source_video=${1:?Pass the original transition MP4}
 for variant in mobile desktop; do
-  if [ "$variant" = mobile ]; then width=768; quality=27; else width=1280; quality=28; fi
+  if [ "$variant" = mobile ]; then width=768; quality=18; else width=1280; quality=19; fi
   "$encoder" -hide_banner -loglevel error -y -i "$source_video" -an \
     -vf "fps=24,scale=${width}:-2:flags=lanczos" -c:v libx264 -preset slow \
     -profile:v main -pix_fmt yuv420p -crf "$quality" -g 1 -bf 0 \
